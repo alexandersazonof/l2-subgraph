@@ -1,0 +1,60 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: ControllerContract
+    network: matic
+    source:
+      address: "0xA8F156088ebFCc4530507e4E3d145e2FC1E6124e"
+      abi: ControllerContract
+      startBlock: 44121444
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - AddedAddressToWhitelist
+        - AddedCodeToWhitelist
+        - ConfirmNextImplementationDelay
+        - ConfirmPlatformFeeChange
+        - ConfirmProfitSharingChange
+        - ConfirmStrategistFeeChange
+        - QueueNextImplementationDelay
+        - QueuePlatformFeeChange
+        - QueueProfitSharingChange
+        - QueueStrategistFeeChange
+        - RemovedAddressFromWhitelist
+        - RemovedCodeFromWhitelist
+        - SharePriceChangeLog
+      abis:
+        - name: ControllerContract
+          file: ./abis/ControllerContract.json
+      eventHandlers:
+        - event: AddedAddressToWhitelist(indexed address)
+          handler: handleAddedAddressToWhitelist
+        - event: AddedCodeToWhitelist(indexed address)
+          handler: handleAddedCodeToWhitelist
+        - event: ConfirmNextImplementationDelay(uint256)
+          handler: handleConfirmNextImplementationDelay
+        - event: ConfirmPlatformFeeChange(uint256)
+          handler: handleConfirmPlatformFeeChange
+        - event: ConfirmProfitSharingChange(uint256)
+          handler: handleConfirmProfitSharingChange
+        - event: ConfirmStrategistFeeChange(uint256)
+          handler: handleConfirmStrategistFeeChange
+        - event: QueueNextImplementationDelay(uint256,uint256)
+          handler: handleQueueNextImplementationDelay
+        - event: QueuePlatformFeeChange(uint256,uint256)
+          handler: handleQueuePlatformFeeChange
+        - event: QueueProfitSharingChange(uint256,uint256)
+          handler: handleQueueProfitSharingChange
+        - event: QueueStrategistFeeChange(uint256,uint256)
+          handler: handleQueueStrategistFeeChange
+        - event: RemovedAddressFromWhitelist(indexed address)
+          handler: handleRemovedAddressFromWhitelist
+        - event: RemovedCodeFromWhitelist(indexed address)
+          handler: handleRemovedCodeFromWhitelist
+        - event: SharePriceChangeLog(indexed address,indexed address,uint256,uint256,uint256)
+          handler: handleSharePriceChangeLog
+      file: ./src/controller-contract.ts
