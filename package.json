@@ -4,10 +4,11 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ alexandersazonof/l2-harvest",
-    "create-local": "graph create --node http://localhost:8020/ alexandersazonof/l2-harvest",
-    "remove-local": "graph remove --node http://localhost:8020/ alexandersazonof/l2-harvest",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 alexandersazonof/l2-harvest",
+
+    "deploy-matic": "graph codegen && graph build --network matic && graph deploy --product hosted-service alexandersazonof/l2-test",
+    "deploy-arbitrum": "graph codegen && graph build --network arbitrum-one && graph deploy --product hosted-service alexandersazonof/l2-arb",
+    "deploy-base": "graph codegen && graph build --network base && graph deploy --studio -l v0.0.1 l2-base",
+
     "test": "graph test"
   },
   "dependencies": {

@@ -1,8 +1,20 @@
 {
   "matic": {
-    "ControllerContract": {
-      "address": "0xA8F156088ebFCc4530507e4E3d145e2FC1E6124e",
-      "startBlock": 44121444
+    "StorageListener": {
+      "address": "0xc95CbE4ca30055c787CB784BE99D6a8494d0d197",
+      "startBlock": 16568230
+    }
+  },
+  "arbitrum-one": {
+    "StorageListener": {
+      "address": "0x88937abfc8C6A88cc70bfc686E4fBba80DE8d329",
+      "startBlock": 65752675
+    }
+  },
+  "base": {
+    "StorageListener": {
+      "address": "0x98E03c6Ed7374F1e58FF022f1D2D8239526E13F9",
+      "startBlock": 1410664
     }
   }
 }
