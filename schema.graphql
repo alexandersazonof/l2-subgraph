@@ -75,6 +75,7 @@ type VaultUtil @entity {
   id: ID!
   vaults: [Vault!]!
   vaultLength: Int!
+  lastBlockUpdate: Int!
 }
 
 type PriceFeed @entity {

@@ -16,5 +16,11 @@
       "address": "0x98E03c6Ed7374F1e58FF022f1D2D8239526E13F9",
       "startBlock": 1410664
     }
+  },
+  "zksync-era": {
+    "StorageListener": {
+      "address": "0xA8B38fb4837c99f66f7b740b5EFfA4f15B9B2205",
+      "startBlock": 7718696
+    }
   }
 }

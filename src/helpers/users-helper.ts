@@ -32,7 +32,7 @@ export function createUserBalance(vault: Vault, user: Address, isDeposit: boolea
   userBalance.value = value
 
   userBalance.save()
-  const userBalanceHistory = new UserBalanceHistory(`${timestamp}-${user.toHex()}`)
+  const userBalanceHistory = new UserBalanceHistory(`${timestamp}-${user.toHex()}-${vault.id}-${isDeposit.toString()}`)
   userBalanceHistory.timestamp = timestamp
   userBalanceHistory.userAddress = user.toHex()
   userBalanceHistory.vault = vault.id

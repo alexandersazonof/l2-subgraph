@@ -39,6 +39,7 @@ export const PS_ADDRESSES_MATIC = [
 export const STORAGE_MATIC = '0xc95CbE4ca30055c787CB784BE99D6a8494d0d197';
 export const STORAGE_ARBITRUM = '0x88937abfc8C6A88cc70bfc686E4fBba80DE8d329';
 export const STORAGE_BASE = '0x98E03c6Ed7374F1e58FF022f1D2D8239526E13F9';
+export const STORAGE_ZK_SYNC_ERA = '0xA8B38fb4837c99f66f7b740b5EFfA4f15B9B2205';
 
 export const ORACLE_ADDRESS_MATIC = Address.fromString('0x0E74303d0D18884Ce2CEb3670e72686645c4f38B');
 
@@ -128,6 +129,7 @@ export const WETH_LIST_ARB = [
 export const MATIC_NETWORK: string = 'matic';
 export const ARBITRUM_NETWORK: string = 'arbitrum-one';
 export const BASE_NETWORK: string = 'base';
+export const ZK_SYNC_ERA_NETWORK: string = 'zksync-era';
 
 export const CALCULATE_ONLY_TVL_MATIC = [
   '0x41f36bb5b26f2e8646e6adc97faa5e2844a6c842',
@@ -213,6 +215,8 @@ export const STABLE_COIN_ARRAY_BASE = [
   '0x9483ab65847a447e36d21af1cab8c87e9712ff93'.toLowerCase(),
   // DOLA
   '0x4621b7a9c75199271f773ebd9a499dbd165c3191'.toLowerCase(),
+  '0xB79DD08EA68A908A97220C76d19A6aA9cBDE4376'.toLowerCase(),
+  '0xC19669A405067927865B40Ea045a2baabbbe57f5'.toLowerCase()
 ]
 
 export const STABLE_COIN_POOL_ARRAY_ARB = [
@@ -296,6 +300,8 @@ export function getOrCreateStorageAddress(): string | null {
     return STORAGE_ARBITRUM;
   } else if (network == BASE_NETWORK) {
     return STORAGE_BASE;
+  } else if (network == ZK_SYNC_ERA_NETWORK) {
+    return STORAGE_ZK_SYNC_ERA;
   }
   log.log(log.Level.ERROR, `Can not get storage address, network: ${network}`)
   return null;
@@ -315,6 +321,19 @@ export function isStableCoin(address: string): boolean {
   return false
 }
 
+export function blockDelay(): number {
+  const network = dataSource.network();
+  if (network == MATIC_NETWORK) {
+    return 41600;
+  } else if (network == ARBITRUM_NETWORK) {
+    return 315360;
+  } else if (network == BASE_NETWORK) {
+    return 43440;
+  } else if (network == ZK_SYNC_ERA_NETWORK) {
+    return 252000;
+  }
+  return 0;
+}
 
 export function isAmUsd(address: Address): boolean {
   return address == AM_USD_BALANCER_MATIC || address == BB_AM_USD_BALANCER_MATIC;

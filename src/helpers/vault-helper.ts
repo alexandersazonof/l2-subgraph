@@ -43,6 +43,7 @@ export function getVaultUtils(): VaultUtil {
     vaultUtils = new VaultUtil(id);
     vaultUtils.vaults = [];
     vaultUtils.vaultLength = 0;
+    vaultUtils.lastBlockUpdate = 0;
     vaultUtils.save()
   }
   return vaultUtils;

@@ -5,9 +5,10 @@
     "codegen": "graph codegen",
     "build": "graph build",
 
-    "deploy-matic": "graph codegen && graph build --network matic && graph deploy --product hosted-service alexandersazonof/l2-test",
-    "deploy-arbitrum": "graph codegen && graph build --network arbitrum-one && graph deploy --product hosted-service alexandersazonof/l2-arb",
-    "deploy-base": "graph codegen && graph build --network base && graph deploy --studio -l v0.0.1 l2-base",
+    "deploy-matic": "graph codegen && graph build --network matic && graph deploy --studio -l v0.0.2 l2-polygon-test",
+    "deploy-arbitrum": "graph codegen && graph build --network arbitrum-one && graph deploy --studio -l v0.0.4 l2-arb-test",
+    "deploy-base": "graph codegen && graph build --network base && graph deploy --studio -l v0.0.3 l2-base",
+    "deploy-zksync-era": "graph codegen && graph build --network zksync-era && graph deploy --studio -l v0.0.4 l2-zksync-era",
 
     "test": "graph test"
   },

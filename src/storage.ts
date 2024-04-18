@@ -1,6 +1,6 @@
 import { Address, BigDecimal, BigInt, ethereum } from '@graphprotocol/graph-ts';
 import { Storage } from '../generated/schema';
-import { getOrCreateStorageAddress } from './utils/constant';
+import { blockDelay, getOrCreateStorageAddress } from './utils/constant';
 import { getOrCreateController } from './helpers/controller-helper';
 import { StorageContract } from '../generated/StorageListener/StorageContract';
 import { getOrCreateVault, getVaultUtils } from './helpers/vault-helper';
@@ -23,10 +23,14 @@ export function handleBlock(block: ethereum.Block): void {
       controller.save();
     }
   }
+  handleBlockPriceHistory(block);
 }
 
 export function handleBlockPriceHistory(block: ethereum.Block): void {
   const vaultUtils = getVaultUtils();
+  if (block.number.toI32() < vaultUtils.lastBlockUpdate + blockDelay()) {
+    return;
+  }
   for (let i = 0; i < vaultUtils.vaults.length; i++) {
     const vault = getOrCreateVault(vaultUtils.vaults[i]);
     const price = getPriceByVault(vault);
@@ -35,4 +39,6 @@ export function handleBlockPriceHistory(block: ethereum.Block): void {
 
     createPriceFeed(vault, block);
   }
+  vaultUtils.lastBlockUpdate = block.number.toI32();
+  vaultUtils.save();
 }
