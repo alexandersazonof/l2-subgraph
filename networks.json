@@ -22,5 +22,17 @@
       "address": "0xA8B38fb4837c99f66f7b740b5EFfA4f15B9B2205",
       "startBlock": 7718696
     }
+  },
+  "polygon-zkevm": {
+    "StorageListener": {
+      "address": "0xf4d0374ae0c3fa6bc073d3c1b4db364610345437",
+      "startBlock": 762749
+    }
+  },
+  "blast-mainnet": {
+    "StorageListener": {
+      "address": "0xCD719739C3Ece8b576D649BE97195aD03e676a2c",
+      "startBlock": 984867
+    }
   }
 }

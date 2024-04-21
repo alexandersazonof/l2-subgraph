@@ -40,6 +40,8 @@ export const STORAGE_MATIC = '0xc95CbE4ca30055c787CB784BE99D6a8494d0d197';
 export const STORAGE_ARBITRUM = '0x88937abfc8C6A88cc70bfc686E4fBba80DE8d329';
 export const STORAGE_BASE = '0x98E03c6Ed7374F1e58FF022f1D2D8239526E13F9';
 export const STORAGE_ZK_SYNC_ERA = '0xA8B38fb4837c99f66f7b740b5EFfA4f15B9B2205';
+export const STORAGE_ZK_EVM = '0xf4d0374ae0c3fa6bc073d3c1b4db364610345437';
+export const STORAGE_BLAST = '0xCD719739C3Ece8b576D649BE97195aD03e676a2c';
 
 export const ORACLE_ADDRESS_MATIC = Address.fromString('0x0E74303d0D18884Ce2CEb3670e72686645c4f38B');
 
@@ -94,6 +96,12 @@ export const CB_ETH_ETH_POOL_BASE = '0x4c8d67201dced0a8e44f59d419cb74665b4cde55'
 export const XBSX_BASE = '0xE4750593d1fC8E74b31549212899A72162f315Fa'.toLowerCase();
 export const BSX_BASE = Address.fromString('0xd5046b976188eb40f6de40fb527f89c05b323385');
 
+// ZkSync Era
+export const SYNC_SWAP_FACTORY_ZK_SYNC_ERA = Address.fromString('0xf2DAd89f2788a8CD54625C60b55cD3d2D0ACa7Cb');
+export const WETH_ZK_SYNC_ERA = Address.fromString('0x5aea5775959fbc2557cc8789bc1bf90a239d9a91');
+export const USDC_ZK_SYNC_ERA = Address.fromString('0x1d17cbcf0d6d143135ae902365d2e5e2a16538d4');
+export const USDT_ZK_SYNC_ERA = Address.fromString('0x493257fd37edb34451f62edf8d2a0c418852ba4c');
+export const USDC_E_ZK_SYNC_ERA = Address.fromString('0x3355df6d4c9c3035724fd0e3914de96a5a83aaf4');
 
 export const WST_ETH_LIST_ARB = [
   WST_ETH_ARB,
@@ -130,6 +138,8 @@ export const MATIC_NETWORK: string = 'matic';
 export const ARBITRUM_NETWORK: string = 'arbitrum-one';
 export const BASE_NETWORK: string = 'base';
 export const ZK_SYNC_ERA_NETWORK: string = 'zksync-era';
+export const ZK_EVM_NETWORK: string = 'polygon-zkevm';
+export const BLAST_NETWORK: string = 'blast-mainnet';
 
 export const CALCULATE_ONLY_TVL_MATIC = [
   '0x41f36bb5b26f2e8646e6adc97faa5e2844a6c842',
@@ -245,6 +255,13 @@ export const CONVEX_POOL_LIST_ARB = [
   '0xF7Fed8Ae0c5B78c19Aadd68b700696933B0Cefd9'.toLowerCase()
 ]
 
+export const STABLE_COIN_ARRAY_ZK_SYNC_ERA = [
+  USDC_ZK_SYNC_ERA,
+  USDT_ZK_SYNC_ERA,
+  USDC_E_ZK_SYNC_ERA,
+  // TODO remove its farm
+  Address.fromString('0x659ef1727551b0c9dd78cb2c231a5d13d42216d0'),
+]
 export const BALANCER_CONTRACT_NAME = [
   'Balancer'.toLowerCase(),
   'frxETH-WETH'.toLowerCase(),
@@ -302,6 +319,10 @@ export function getOrCreateStorageAddress(): string | null {
     return STORAGE_BASE;
   } else if (network == ZK_SYNC_ERA_NETWORK) {
     return STORAGE_ZK_SYNC_ERA;
+  } else if (network == ZK_EVM_NETWORK) {
+    return STORAGE_ZK_EVM;
+  } else if (network == BLAST_NETWORK) {
+    return STORAGE_BLAST;
   }
   log.log(log.Level.ERROR, `Can not get storage address, network: ${network}`)
   return null;
@@ -316,7 +337,8 @@ export function isStableCoin(address: string): boolean {
     return STABLE_COIN_ARRAY_ARBITRUM.join(' ').includes(address) == true
   } else if (dataSource.network() == BASE_NETWORK) {
     return STABLE_COIN_ARRAY_BASE.join(' ').includes(address) == true;
-
+  } else if (dataSource.network() == ZK_SYNC_ERA_NETWORK) {
+    return STABLE_COIN_ARRAY_ZK_SYNC_ERA.join(' ').includes(address) == true;
   }
   return false
 }
@@ -331,6 +353,10 @@ export function blockDelay(): number {
     return 43440;
   } else if (network == ZK_SYNC_ERA_NETWORK) {
     return 252000;
+  } else if (network == ZK_EVM_NETWORK) {
+    return 41600;
+  } else if (network == BLAST_NETWORK) {
+    return 41600;
   }
   return 0;
 }

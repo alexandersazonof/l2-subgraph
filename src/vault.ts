@@ -13,8 +13,6 @@ export function handleTransfer(event: Transfer): void {
     vault.pool = pool.id;
   }
   const tvl = createTvl(vault, event.block.timestamp);
-  vault.tvl = tvl.value;
-  vault.save();
   createUserBalance(vault, event.params.from, false, event.block.timestamp);
   createUserBalance(vault, event.params.to, true, event.block.timestamp);
 }

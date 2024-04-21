@@ -5,6 +5,7 @@ import { pow } from '../utils/number-utils';
 import { BD_TEN, BD_ZERO, BI_EVERY_7_DAYS, CALCULATE_ONLY_TVL_MATIC, CONST_ID, MATIC_NETWORK } from '../utils/constant';
 import { fetchPricePerFullShare } from '../utils/vault-utils';
 import { getPriceByVault } from '../utils/price-utils';
+import { getOrCreateVault } from './vault-helper';
 
 export function createTvl(vault: Vault, timestamp: BigInt = BigInt.zero()): Tvl {
   const id = `${vault.id}-${timestamp.toString()}`
@@ -38,12 +39,15 @@ export function createTvl(vault: Vault, timestamp: BigInt = BigInt.zero()): Tvl 
     }
     tvl.save();
 
-    createTotalTvl(vault, timestamp);
+    vault.tvl = tvl.value;
+    vault.save();
+
+    createTotalTvl(timestamp);
   }
   return tvl;
 }
 
-export function createTotalTvl(vault: Vault, timestamp: BigInt): void {
+export function createTotalTvl(timestamp: BigInt): void {
   const tvlUtils = getTvlUtils(timestamp);
   // CREATE EVERY WEEK
   if (!(tvlUtils.lastTimestampUpdate.plus(BI_EVERY_7_DAYS) > timestamp || tvlUtils.lastTimestampUpdate.isZero())) {
@@ -52,6 +56,7 @@ export function createTotalTvl(vault: Vault, timestamp: BigInt): void {
   let totalTvl = BigDecimal.zero()
   const array = tvlUtils.vaults
   for (let i = 0; i < array.length; i++) {
+    const vault = getOrCreateVault(array[i]);
     if (canCalculateTotalTvl(vault.id)) {
       const tvl = vault.tvl
       totalTvl = totalTvl.plus(tvl)
