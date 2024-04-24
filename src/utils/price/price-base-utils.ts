@@ -68,19 +68,9 @@ export function getPriceByVaultBase(vault: Vault): BigDecimal {
     return getPriceForCoinBase(BSX_BASE).divDecimal(BD_18);
   }
 
-
-  let price = getPriceForCoinBase(Address.fromString(underlyingAddress))
-  if (!price.isZero()) {
-    return price.divDecimal(BD_18)
-  }
-
   const underlying = Token.load(underlyingAddress)
   if (underlying != null) {
     if (isLpUniPair(underlying.name)) {
-      const tempPrice = getPriceForCoinBase(Address.fromString(underlyingAddress))
-      if (tempPrice.gt(DEFAULT_PRICE)) {
-        return tempPrice.divDecimal(BD_18)
-      }
       return getPriceLpUniPair(underlying.id);
     }
 
@@ -91,6 +81,10 @@ export function getPriceByVaultBase(vault: Vault): BigDecimal {
     if (isCurve(underlying.name)) {
       return getPriceForCurve(underlying.id)
     }
+  }
+  let price = getPriceForCoinBase(Address.fromString(underlyingAddress))
+  if (!price.isZero()) {
+    return price.divDecimal(BD_18)
   }
 
   return BigDecimal.zero()

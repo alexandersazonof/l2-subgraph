@@ -26,7 +26,7 @@ import {
   isStableCoin,
   isStablePool,
   isWeth,
-  isWsteth, NULL_ADDRESS,
+  isWsteth, NULL_ADDRESS, PENDLE_ARB, PENDLE_LPT_ARB,
   RADIANT_ARB,
   SILO_ARB,
   SOLID_LIZARD_FACTORY_ARB,
@@ -79,6 +79,9 @@ export function getPriceForCoinArb(address: Address): BigInt {
   }
   if (address.equals(SILO_ARB)) {
     return getPriceForCamelot(address);
+  }
+  if (address.equals(PENDLE_LPT_ARB)) {
+    return getPriceForCamelot(PENDLE_ARB);
   }
   if (isStableCoin(address.toHexString())) {
     return BI_18;
@@ -216,10 +219,7 @@ function getPriceForIFARM(): BigInt {
 export function getPriceByVaultArb(vault: Vault): BigDecimal {
   const underlyingAddress = vault.underlying
 
-  let price = getPriceForCoinArb(Address.fromString(underlyingAddress))
-  if (!price.isZero()) {
-    return price.divDecimal(BD_18)
-  }
+
 
   const underlying = Token.load(underlyingAddress)
   if (underlying != null) {
@@ -233,10 +233,6 @@ export function getPriceByVaultArb(vault: Vault): BigDecimal {
     }
 
     if (isLpUniPair(underlying.name)) {
-      const tempPrice = getPriceForCoinArb(Address.fromString(underlyingAddress))
-      if (tempPrice.gt(DEFAULT_PRICE)) {
-        return tempPrice.divDecimal(BD_18)
-      }
       return getPriceLpUniPair(underlying.id);
     }
 
@@ -285,6 +281,10 @@ export function getPriceByVaultArb(vault: Vault): BigDecimal {
     }
   }
 
+  let price = getPriceForCoinArb(Address.fromString(underlyingAddress))
+  if (!price.isZero()) {
+    return price.divDecimal(BD_18)
+  }
   return BigDecimal.zero()
 }
 

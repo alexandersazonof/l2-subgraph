@@ -97,20 +97,10 @@ export function getPriceByVaultMatic(vault: Vault): BigDecimal {
     return getPriceForCaviar()
   }
 
-  let price = getPriceForCoinMatic(Address.fromString(underlyingAddress))
-  if (!price.isZero()) {
-    return price.divDecimal(BD_18)
-  }
-
   const underlying = Token.load(underlyingAddress)
   if (underlying != null) {
     if (isLpUniPair(underlying.name)) {
-      const tempPrice = getPriceForCoinMatic(Address.fromString(underlyingAddress))
-      if (tempPrice.gt(DEFAULT_PRICE)) {
-        return tempPrice.divDecimal(BD_18)
-      }
-      const inTempPrice = getPriceLpUniPair(underlying.id);
-      return inTempPrice;
+      return getPriceLpUniPair(underlying.id);
     }
 
     if (isTetu(underlying.name)) {
@@ -147,6 +137,12 @@ export function getPriceByVaultMatic(vault: Vault): BigDecimal {
       const tempPrice = getPriceForPearlAssets(Address.fromString(underlying.id));
       return tempPrice;
     }
+  }
+
+
+  let price = getPriceForCoinMatic(Address.fromString(underlyingAddress))
+  if (!price.isZero()) {
+    return price.divDecimal(BD_18)
   }
 
   return BigDecimal.zero()

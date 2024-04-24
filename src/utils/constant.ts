@@ -86,6 +86,9 @@ export const CAMELOT_FACTORY_ARB = Address.fromString('0x6eccab422d763ac03121089
 export const WBTC_ARB = Address.fromString('0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f');
 export const ARB = Address.fromString('0x912CE59144191C1204E64559FE8253a0e49E6548');
 export const UNISWAP_V3_POISON_FINANCE_POOL_ARB = Address.fromString('0xa74eceae9c7670b019e0890881598b4c398d1c01');
+export const PENDLE_LPT_ARB = Address.fromString('0xf617792eA9Dceb2208F4C440258B21d2f3FdB9A3');
+export const PENDLE_ARB = Address.fromString('0x0c880f6761F1af8d9Aa9C466984b80DAb9a8c9e8');
+
 
 // BASE
 export const WETH_BASE = Address.fromString('0x4200000000000000000000000000000000000006');
