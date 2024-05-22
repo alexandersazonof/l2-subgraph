@@ -101,6 +101,9 @@ export function createApyReward(
     }
   }
 
+  if (apy.gt(BIG_APY_BD)) {
+    return;
+  }
 
   const apyReward = new ApyReward(`${timestamp}-${vault.id}`)
 

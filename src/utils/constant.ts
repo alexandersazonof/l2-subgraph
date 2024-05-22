@@ -14,11 +14,13 @@ export const BD_ONE_HUNDRED = BigDecimal.fromString('100')
 export const YEAR_PERIOD = BigDecimal.fromString('365')
 export const BD_ONE = BigDecimal.fromString('1')
 export const BD_18 = BigDecimal.fromString('1000000000000000000')
-export const BIG_APY_BD = BigDecimal.fromString('1000');
+export const BIG_APY_BD = BigDecimal.fromString('5000');
 export const TWO_WEEKS_IN_SECONDS = BigInt.fromString('1209600');
 export const BI_TEN = BigInt.fromI64(10)
 export const CONST_ID = '1';
 export const BI_EVERY_7_DAYS = BigInt.fromString('604800');
+export const BI_EVERY_10_HOURS = BigInt.fromString('36000');
+
 export const BI_18 = BigInt.fromI64(10 ** 18)
 export const DEFAULT_PRICE = BigInt.fromI32(0);
 export const DEFAULT_IFARM_PRICE = BigInt.fromString('40000000000000000000')
@@ -64,6 +66,7 @@ export const CAVIAR_MATIC = Address.fromString('0x6ae96cc93331c19148541d4d2f3136
 export const PEARL_ROUTER_MATIC = Address.fromString('0xcC25C0FD84737F44a7d38649b69491BBf0c7f083');
 export const PAR_USDT_UNISWAP_V_3_MATIC = Address.fromString('0xfa22d298e3b0bc1752e5ef2849cec1149d596674');
 export const PAR_MATIC = Address.fromString('0xE2Aa7db6dA1dAE97C5f5C6914d285fBfCC32A128');
+export const QUICK_SWAP_FACTORY = Address.fromString('0x5757371414417b8C6CAad45bAeF941aBc7d3Ab32');
 
 // ARB
 export const IFARM_ARB = Address.fromString('0x9dca587dc65ac0a043828b0acd946d71eb8d46c1');
@@ -93,6 +96,9 @@ export const PENDLE_ARB = Address.fromString('0x0c880f6761F1af8d9Aa9C466984b80DA
 // BASE
 export const WETH_BASE = Address.fromString('0x4200000000000000000000000000000000000006');
 export const USDC_BASE = Address.fromString('0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA');
+export const USDC_P_BASE = Address.fromString('0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913');
+export const GOLD_BASE = Address.fromString('0xbeFD5C25A59ef2C1316c5A4944931171F30Cd3E4');
+export const GOLD_BASE_POOL = Address.fromString('0xbeFD5C25A59ef2C1316c5A4944931171F30Cd3E4');
 export const BASE_SWAP_FACTORY_BASE = Address.fromString('0xFDa619b6d20975be80A10332cD39b9a4b0FAa8BB');
 export const AERODROME_SWAP_FACTORY_BASE = Address.fromString('0x420dd381b31aef6683db6b902084cb0ffece40da');
 export const CB_ETH_ETH_POOL_BASE = '0x4c8d67201dced0a8e44f59d419cb74665b4cde55'.toLowerCase();
@@ -181,7 +187,8 @@ export const STABLE_COIN_ARRAY_MATIC = [
   '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063'.toLowerCase(),
   // STAR
   '0xc19669a405067927865b40ea045a2baabbbe57f5'.toLowerCase(),
-  '0xE2Aa7db6dA1dAE97C5f5C6914d285fBfCC32A128'.toLowerCase()
+  '0xE2Aa7db6dA1dAE97C5f5C6914d285fBfCC32A128'.toLowerCase(),
+  '0xF7Cbe177157031eA2d63399BeEFc027779585Bb8'.toLowerCase()
 ]
 
 export const STABLE_COIN_ARRAY_ARBITRUM = [
@@ -229,7 +236,8 @@ export const STABLE_COIN_ARRAY_BASE = [
   // DOLA
   '0x4621b7a9c75199271f773ebd9a499dbd165c3191'.toLowerCase(),
   '0xB79DD08EA68A908A97220C76d19A6aA9cBDE4376'.toLowerCase(),
-  '0xC19669A405067927865B40Ea045a2baabbbe57f5'.toLowerCase()
+  '0xC19669A405067927865B40Ea045a2baabbbe57f5'.toLowerCase(),
+  '0x65a2508C429a6078a7BC2f7dF81aB575BD9D9275'.toLowerCase()
 ]
 
 export const STABLE_COIN_POOL_ARRAY_ARB = [
@@ -240,11 +248,13 @@ export const STABLE_COIN_POOL_ARRAY_ARB = [
   '0xC9B8a3FDECB9D5b218d02555a8Baf332E5B740d5'.toLowerCase(),
   '0x7f90122BF0700F9E7e1F688fe926940E8839F353'.toLowerCase(),
   '0x2bb55dC7c125D132322d6f7056FF6a575D64Fb7C'.toLowerCase(),
+  '0xF35f0B288bE527855f954ABCf7E38604Ea11d92D'.toLowerCase()
 ]
 
 export const BTC_POOLS_ARB = [
   '0x542f16da0efb162d20bf4358efa095b70a100f9e'.toLowerCase(),
-  '0x6c1B07ed05656DEdd90321E94B1cDB26981e65f2'.toLowerCase()
+  '0x6c1B07ed05656DEdd90321E94B1cDB26981e65f2'.toLowerCase(),
+  '0x6c84a8f1c29108F47a79964b5Fe888D4f4D0dE40'.toLowerCase()
 ]
 
 export const ARB_POOL = [
@@ -346,12 +356,13 @@ export function isStableCoin(address: string): boolean {
   return false
 }
 
+// ~ 24 hours
 export function blockDelay(): number {
   const network = dataSource.network();
   if (network == MATIC_NETWORK) {
     return 41600;
   } else if (network == ARBITRUM_NETWORK) {
-    return 315360;
+    return 315360 * 6;
   } else if (network == BASE_NETWORK) {
     return 43440;
   } else if (network == ZK_SYNC_ERA_NETWORK) {
@@ -361,7 +372,7 @@ export function blockDelay(): number {
   } else if (network == BLAST_NETWORK) {
     return 41600;
   }
-  return 0;
+  return 41600;
 }
 
 export function isAmUsd(address: Address): boolean {

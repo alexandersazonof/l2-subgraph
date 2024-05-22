@@ -6,6 +6,7 @@ import { StorageContract } from '../generated/StorageListener/StorageContract';
 import { getOrCreateVault, getVaultUtils } from './helpers/vault-helper';
 import { createPriceFeed } from './helpers/price-feed-helper';
 import { getPriceByVault } from './utils/price-utils';
+import { SetControllerCall } from '../generated/StorageContract/StorageContract';
 
 export function handleBlock(block: ethereum.Block): void {
   const storageAdr = getOrCreateStorageAddress();
@@ -24,6 +25,10 @@ export function handleBlock(block: ethereum.Block): void {
     }
   }
   handleBlockPriceHistory(block);
+}
+
+export function handleSetController(call: SetControllerCall): void {
+  const controller = getOrCreateController(call.inputs._controller.toHexString(), call.block.timestamp);
 }
 
 export function handleBlockPriceHistory(block: ethereum.Block): void {

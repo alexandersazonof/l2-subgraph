@@ -13,14 +13,14 @@ import {
   CB_ETH_ETH_POOL_BASE,
   checkBalancer,
   DEFAULT_DECIMAL,
-  DEFAULT_PRICE,
+  DEFAULT_PRICE, GOLD_BASE, GOLD_BASE_POOL,
   isBalancer,
   isCurve,
   isLpUniPair,
   isStableCoin,
   isWeth,
   USDC_BASE,
-  USDC_DECIMAL,
+  USDC_DECIMAL, USDC_P_BASE,
   WETH_BASE,
   XBSX_BASE,
 } from '../constant';
@@ -42,6 +42,9 @@ export function getPriceForCoinBase(address: Address): BigInt {
   if (isWeth(address)) {
     tokenAddress = WETH_BASE;
   }
+  if (address.equals(GOLD_BASE)) {
+    return getPriceForBalancerPool(USDC_P_BASE, GOLD_BASE, GOLD_BASE_POOL)
+  }
   let price = getPriceForCoinWithSwap(tokenAddress, USDC_BASE, BASE_SWAP_FACTORY_BASE)
   if (price.gt(BigInt.zero())) {
     return price;
@@ -61,7 +64,7 @@ export function getPriceByVaultBase(vault: Vault): BigDecimal {
   const underlyingAddress = vault.underlying
 
   if (CB_ETH_ETH_POOL_BASE == vault.id) {
-    return getPriceForCoinBase(WETH_BASE).times(BI_TEN).divDecimal(BD_18);
+    return getPriceForCoinBase(WETH_BASE).divDecimal(BD_18);
   }
 
   if (XBSX_BASE == underlyingAddress) {
@@ -241,6 +244,38 @@ function getPriceForAerodrome(tokenA: Address, tokenB: Address, factoryAddress: 
     return BigInt.zero();
   }
   return tryPrices.value[0];
+}
+
+function getPriceForBalancerPool(tokenA: Address, tokenB: Address, underlying: Address): BigInt {
+  const balancer = WeightedPool2TokensContract.bind(underlying)
+  const tryGetPoolId = balancer.try_getPoolId()
+  if (tryGetPoolId.reverted) {
+    return BigInt.zero()
+  }
+  const vault = BalancerVaultContract.bind(balancer.getVault())
+  const tryTokenInfo = vault.try_getPoolTokens(tryGetPoolId.value)
+  if (tryTokenInfo.reverted) {
+    return BigInt.zero()
+  }
+  let balanceA = BigInt.zero()
+  let balanceB = BigInt.zero()
+  for (let i=0;i<tryTokenInfo.value.getTokens().length;i++) {
+    const tokenAddress = tryTokenInfo.value.getTokens()[i]
+    const tryDecimals = ERC20.bind(tokenAddress).try_decimals()
+    let decimal = DEFAULT_DECIMAL
+    if (!tryDecimals.reverted) {
+      decimal = tryDecimals.value
+    }
+    if (tokenA.equals(tokenAddress)) {
+      balanceA = tryTokenInfo.value.getBalances()[i].div(powBI(BI_TEN, decimal));
+    }
+    if (tokenB.equals(tokenAddress)) {
+      balanceB = tryTokenInfo.value.getBalances()[i].div(powBI(BI_TEN, decimal));
+    }
+
+  }
+
+  return balanceA.div(balanceB)
 }
 
 function getPriceForCoinWithSwap(address: Address, stableCoin: Address, factory: Address): BigInt {

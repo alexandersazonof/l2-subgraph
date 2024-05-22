@@ -24,6 +24,7 @@ export function getOrCreateVault(id: string, timestamp: BigInt = BigInt.zero()):
     vault.priceUnderlying = BigDecimal.zero()
     vault.apyReward = BigDecimal.zero();
     vault.apy = BigDecimal.zero();
+    vault.tvlSequenceId = 1;
     vault.apyAutoCompound = BigDecimal.zero();
     vault.users = [];
     vault.lastUsersShareTimestamp = BigInt.zero();

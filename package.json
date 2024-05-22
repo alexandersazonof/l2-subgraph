@@ -4,11 +4,11 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-
-    "deploy-matic": "graph codegen && graph build --network matic && graph deploy --studio -l v0.0.5 l2-polygon-test",
-    "deploy-arbitrum": "graph codegen && graph build --network arbitrum-one && graph deploy --studio -l v0.0.7 l2-arb-test",
-    "deploy-base": "graph codegen && graph build --network base && graph deploy --studio -l v0.0.7 l2-base",
-    "deploy-zksync-era": "graph codegen && graph build --network zksync-era && graph deploy --studio -l v0.0.5 l2-zksync-era",
+    "deploy-matic": "graph codegen && graph build --network matic && graph deploy --studio -l v0.0.11 l2-polygon-test",
+    "deploy-arbitrum": "graph codegen && graph build --network arbitrum-one && graph deploy --studio -l v0.0.15 l2-arb-test",
+    "deploy-arbitrum-2": "graph deploy --studio -l v0.0.1 harvest-arb",
+    "deploy-base": "graph codegen && graph build --network base && graph deploy --studio -l v0.0.14 l2-base",
+    "deploy-zksync-era": "graph codegen && graph build --network zksync-era && graph deploy --studio -l v0.0.6 l2-zksync-era",
     "deploy-zk-evm": "graph codegen && graph build --network polygon-zkevm && graph deploy --studio -l v0.0.1 l2-zk-evm",
     "deploy-blast-mainnet": "graph codegen && graph build --network blast-mainnet && graph deploy --studio -l v0.0.1 l2-blast",
 

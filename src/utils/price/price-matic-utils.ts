@@ -7,7 +7,7 @@ import {
   BD_ONE,
   BD_TEN,
   BD_ZERO,
-  BI_18,
+  BI_18, BI_TEN,
   BRZ_MATIC,
   CAVIAR_MATIC,
   CURVE_CONTRACT_NAME,
@@ -38,14 +38,14 @@ import {
   PEARL_ROUTER_MATIC,
   PS_ADDRESSES_MAINNET,
   PS_ADDRESSES_MATIC,
-  QUICK_SWAP_CONTRACT,
-  TETU_CONTRACT,
+  QUICK_SWAP_CONTRACT, QUICK_SWAP_FACTORY,
+  TETU_CONTRACT, USDC_DECIMAL,
   USDC_MATIC,
   WETH_LIST_MATIC,
   WETH_MATIC,
 } from '../constant';
 import { OracleContract } from '../../../generated/StorageListener/OracleContract';
-import { pow } from '../number-utils';
+import { pow, powBI } from '../number-utils';
 import { Token, Vault } from '../../../generated/schema';
 import { TetuPriceCalculatorContract } from '../../../generated/StorageListener/TetuPriceCalculatorContract';
 import { CurveVaultContract } from '../../../generated/StorageListener/CurveVaultContract';
@@ -61,6 +61,8 @@ import { QuickSwapPoolContract } from '../../../generated/StorageListener/QuickS
 import { PearlPairContract } from '../../../generated/StorageListener/PearlPairContract';
 import { PearlRouterContract } from '../../../generated/StorageListener/PearlRouterContract';
 import { UniswapV3PoolContract } from '../../../generated/StorageListener/UniswapV3PoolContract';
+import { PancakeFactoryContract } from '../../../generated/StorageListener/PancakeFactoryContract';
+import { PancakePairContract } from '../../../generated/StorageListener/PancakePairContract';
 
 export function getPriceForCoinMatic(reqAddress: Address): BigInt {
   if (isStableCoin(reqAddress.toHexString())) {
@@ -75,11 +77,48 @@ export function getPriceForCoinMatic(reqAddress: Address): BigInt {
   }
   const oracle = OracleContract.bind(ORACLE_ADDRESS_MATIC)
   let tryGetPrice = oracle.try_getPrice(address)
-  if (tryGetPrice.reverted) {
+  if (tryGetPrice.reverted || tryGetPrice.value.equals(BigInt.zero())) {
+
+    const wethPrice = oracle.getPrice(WETH_MATIC);
+    const price = getPriceForCoinWithUniswap(address, WETH_MATIC, QUICK_SWAP_FACTORY);
+    const value = price.times(wethPrice);
+    if (value.gt(BigInt.zero())) {
+      return price.times(wethPrice).div(BI_18)
+    }
+
     log.log(log.Level.WARNING, `Can not get price for address ${address.toHexString()}`)
     return DEFAULT_PRICE
   }
   return tryGetPrice.value;
+}
+
+function getPriceForCoinWithUniswap(tokenA: Address, tokenB: Address, factory: Address): BigInt {
+  if (isStableCoin(tokenA.toHex())) {
+    return BI_18
+  }
+  const uniswapFactoryContract = PancakeFactoryContract.bind(factory)
+  const tryGetPair = uniswapFactoryContract.try_getPair(tokenB, tokenA)
+  if (tryGetPair.reverted) {
+    return DEFAULT_PRICE
+  }
+
+  const poolAddress = tryGetPair.value
+
+  const uniswapPairContract = PancakePairContract.bind(poolAddress);
+  const tryGetReserves = uniswapPairContract.try_getReserves()
+  if (tryGetReserves.reverted) {
+    log.log(log.Level.WARNING, `Can not get reserves for ${poolAddress.toHex()}`)
+
+    return DEFAULT_PRICE
+  }
+  const reserves = tryGetReserves.value
+  const decimal = fetchContractDecimal(tokenA)
+  const decimalA = fetchContractDecimal(tokenA)
+  const decimalB = fetchContractDecimal(tokenB)
+
+  const delimiter = powBI(BI_TEN, decimal.toI32() - decimalB.toI32() + decimalA.toI32());
+
+  return reserves.get_reserve1().times(delimiter).div(reserves.get_reserve0())
 }
 
 export function getPriceByVaultMatic(vault: Vault): BigDecimal {

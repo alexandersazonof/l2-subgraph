@@ -18,6 +18,7 @@ type Vault @entity {
   decimal: Int!
   underlying: Token!
   tvl: BigDecimal!
+  tvlSequenceId: Int!
   priceUnderlying: BigDecimal!
   apy: BigDecimal!
   apyReward: BigDecimal!
@@ -93,6 +94,7 @@ type Tvl @entity {
   id: ID!
   vault: Vault!
   totalSupply: BigInt!
+  tvlSequenceId: Int!
   value: BigDecimal!
   priceUnderlying: BigDecimal!
   sharePrice: BigInt!

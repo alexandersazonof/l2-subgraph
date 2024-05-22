@@ -2,7 +2,15 @@ import { TotalTvlCount, TotalTvlHistoryV2, TotalTvlUtil, Tvl, Vault } from '../.
 import { Address, BigDecimal, BigInt, dataSource } from '@graphprotocol/graph-ts';
 import { fetchContractTotalSupply } from '../utils/token-utils';
 import { pow } from '../utils/number-utils';
-import { BD_TEN, BD_ZERO, BI_EVERY_7_DAYS, CALCULATE_ONLY_TVL_MATIC, CONST_ID, MATIC_NETWORK } from '../utils/constant';
+import {
+  BD_TEN,
+  BD_ZERO,
+  BI_EVERY_10_HOURS,
+  BI_EVERY_7_DAYS,
+  CALCULATE_ONLY_TVL_MATIC,
+  CONST_ID,
+  MATIC_NETWORK,
+} from '../utils/constant';
 import { fetchPricePerFullShare } from '../utils/vault-utils';
 import { getPriceByVault } from '../utils/price-utils';
 import { getOrCreateVault } from './vault-helper';
@@ -37,8 +45,10 @@ export function createTvl(vault: Vault, timestamp: BigInt = BigInt.zero()): Tvl 
     } else {
       tvl.value = BD_ZERO;
     }
+    tvl.tvlSequenceId = vault.tvlSequenceId;
     tvl.save();
 
+    vault.tvlSequenceId = vault.tvlSequenceId + 1;
     vault.tvl = tvl.value;
     vault.save();
 
@@ -50,7 +60,7 @@ export function createTvl(vault: Vault, timestamp: BigInt = BigInt.zero()): Tvl 
 export function createTotalTvl(timestamp: BigInt): void {
   const tvlUtils = getTvlUtils(timestamp);
   // CREATE EVERY WEEK
-  if (!(tvlUtils.lastTimestampUpdate.plus(BI_EVERY_7_DAYS) > timestamp || tvlUtils.lastTimestampUpdate.isZero())) {
+  if (tvlUtils.lastTimestampUpdate.plus(BI_EVERY_10_HOURS).gt(timestamp)) {
     return;
   }
   let totalTvl = BigDecimal.zero()
